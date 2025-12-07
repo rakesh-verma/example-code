@@ -22,3 +22,85 @@ SET start_date = txn_date;
 ALTER TABLE tin_db.records DROP COLUMN txn_date;
 
 SHOW TABLE tin_db.records;
+
+
+ SELECT * FROM tin_db.records;
+ ALTER TABLE tin_db.records ADD npi VARCHAR(20);
+ 
+UPDATE tin_db.records
+SET 
+    npi = '6122336677',
+    end_date = '2025-06-26' -- Added the missing quote
+WHERE 
+    tin = 'TIN5';
+    
+    
+ALTER TABLE tin_db.records
+ADD start_date DATE;
+
+UPDATE tin_db.records
+SET start_date = txn_date;
+
+
+ALTER TABLE tin_db.records DROP COLUMN txn_date;
+
+SHOW TABLE tin_db.records;
+
+HELP TABLE tin_db.records;
+
+
+INSERT INTO tin_db.records (
+    end_date,
+    npi,
+    start_date,
+    testone,
+    testtwo,
+    tin,
+    txn_date
+)
+VALUES (
+    '2026-06-30',
+    '9876543210',
+    '2024-03-15',
+    500,
+    'Active Status',
+    'TIN_A_456',
+    '2024-03-16'
+);
+
+
+
+
+
+-- Update TIN1
+UPDATE tin_db.records
+SET tin = 'TIN0000001'
+WHERE tin = 'TIN1';
+
+-- Update TIN2
+UPDATE tin_db.records
+SET tin = 'TIN0000002'
+WHERE tin = 'TIN2';
+
+-- Update TIN3 (as used in an earlier example)
+UPDATE tin_db.records
+SET tin = 'TIN0000003'
+WHERE tin = 'TIN3';
+
+-- Update TIN4
+UPDATE tin_db.records
+SET tin = 'TIN0000006'
+WHERE tin = 'TIN_A_456';
+
+-- Update TIN5
+UPDATE tin_db.records
+SET tin = 'TIN0000005'
+WHERE tin = 'TIN5';
+
+
+
+
+
+
+
+

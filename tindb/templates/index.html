@@ -32,6 +32,7 @@
 <body>
   <h2>Download TIN Excel Report</h2>
   <form id="reportForm">
+    
     <label>TIN (comma-separated for multiple):</label>
     <input type="text" name="fe_tin" placeholder="tin1,tin2,tin3" required>
 
@@ -49,6 +50,7 @@
 
     <button type="submit" id="submitBtn">Download Excel</button>
     <div class="spinner" id="spinner">🔄 Processing...</div>
+
   </form>
 
   <script>
@@ -57,16 +59,27 @@
     const submitBtn = document.getElementById('submitBtn');
 
     form.addEventListener('submit', function (e) {
-      // If NPI is provided but invalid, stop submission
+      e.preventDefault();
+
+      // Validate TINs (each should be exactly 9 chars)
+      const tinField = form.querySelector('input[name="fe_tin"]').value.trim();
+      const tinList = tinField.split(',').map(t => t.trim());
+
+      for (let t of tinList) {
+        if (t.length !== 9) {
+          alert("Each TIN must be exactly 9 characters.\nInvalid TIN: " + t);
+          return;
+        }
+      }
+
+      // Validate NPI (if provided)
       const npiValue = form.querySelector('input[name="npi"]').value.trim();
       if (npiValue !== "" && !/^\d{10}$/.test(npiValue)) {
-        alert("NPI must be exactly 10 digits");
+        alert("NPI must be exactly 10 digits.");
         return;
       }
 
-      e.preventDefault();
       const formData = new FormData(form);
-
       spinner.style.display = 'block';
       submitBtn.disabled = true;
 
@@ -81,7 +94,7 @@
       .then(blob => {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
-        const tin = form.querySelector('input[name="fe_tin"]').value.replace(/,/g, "_");
+        const tin = tinField.replace(/,/g, "_");
         const endDate = form.querySelector('input[name="end_date"]').value;
         a.href = url;
         a.download = `${tin}_${endDate}.xlsx`;
@@ -96,5 +109,6 @@
       });
     });
   </script>
+
 </body>
 </html>
