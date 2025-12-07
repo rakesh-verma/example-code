@@ -1,63 +1,65 @@
-2025-11-27 12:39:59,607 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
- * Running on http://127.0.0.1:5000
-2025-11-27 12:39:59,608 [INFO] [33mPress CTRL+C to quit[0m
-2025-11-27 12:39:59,610 [INFO]  * Restarting with stat
-2025-11-27 12:40:00,987 [WARNING]  * Debugger is active!
-2025-11-27 12:40:00,999 [INFO]  * Debugger PIN: 535-846-782
-2025-11-27 12:40:46,202 [INFO] 127.0.0.1 - - [27/Nov/2025 12:40:46] "GET / HTTP/1.1" 200 -
-2025-11-27 12:40:46,402 [INFO] 127.0.0.1 - - [27/Nov/2025 12:40:46] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
-2025-12-07 10:26:46,008 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
- * Running on http://127.0.0.1:5000
-2025-12-07 10:26:46,010 [INFO] [33mPress CTRL+C to quit[0m
-2025-12-07 10:26:46,013 [INFO]  * Restarting with stat
-2025-12-07 10:26:47,186 [WARNING]  * Debugger is active!
-2025-12-07 10:26:47,200 [INFO]  * Debugger PIN: 535-846-782
-2025-12-07 10:26:49,871 [INFO] 127.0.0.1 - - [07/Dec/2025 10:26:49] "GET / HTTP/1.1" 200 -
-2025-12-07 10:26:50,078 [INFO] 127.0.0.1 - - [07/Dec/2025 10:26:50] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
-2025-12-07 10:28:32,717 [INFO] Query with placeholders:
+2025-12-07 12:15:21,938 [INFO] Final SQL query:
 
-        WITH abc AS
-        (
-            SELECT * FROM tin_db.records
-            WHERE txn_date >= ?
-        ),
-        a AS
-        (
-            SELECT * FROM tin_db.records
-            WHERE txn_date >= ?
-        )
-        SELECT x.* 
-        FROM
-        (
-            SELECT * FROM abc WHERE tin IN (?)
-            UNION
-            SELECT * FROM abc WHERE tin IN (?)
-        ) x
-        WHERE x.txn_date >= ?
+        SELECT * FROM tin_db.records
+        WHERE end_date >= ?
+          AND start_date >= ?
+          AND tin IN (?)
         
-2025-12-07 10:28:32,721 [INFO] Params: ['2025-07-17', '2025-07-17', 'TIN3', 'TIN3', '2025-07-17']
-2025-12-07 10:28:32,722 [INFO] Final SQL query for SQL editor:
+2025-12-07 12:15:21,939 [INFO] Params: ['2025-03-21', '2025-12-07', 'TIN2']
+2025-12-07 12:15:23,094 [WARNING] No records found for TINs=TIN2, End Date=2025-03-21, Start Date=2025-12-07
+2025-12-07 12:15:23,095 [INFO] 127.0.0.1 - - [07/Dec/2025 12:15:23] "[33mPOST /download HTTP/1.1[0m" 404 -
+2025-12-07 12:16:21,324 [INFO]  * Detected change in 'C:\\rakesh-c\\rnd\\python\\tindb\\app.py', reloading
+2025-12-07 12:16:21,514 [INFO]  * Restarting with stat
+2025-12-07 12:16:22,745 [WARNING]  * Debugger is active!
+2025-12-07 12:16:22,756 [INFO]  * Debugger PIN: 535-846-782
+2025-12-07 12:16:28,077 [INFO] 127.0.0.1 - - [07/Dec/2025 12:16:28] "GET / HTTP/1.1" 200 -
+2025-12-07 12:16:35,609 [INFO] Final SQL query:
 
-        WITH abc AS
-        (
-            SELECT * FROM tin_db.records
-            WHERE txn_date >= '2025-07-17'
-        ),
-        a AS
-        (
-            SELECT * FROM tin_db.records
-            WHERE txn_date >= '2025-07-17'
-        )
-        SELECT x.* 
-        FROM
-        (
-            SELECT * FROM abc WHERE tin IN ('TIN3')
-            UNION
-            SELECT * FROM abc WHERE tin IN ('TIN3')
-        ) x
-        WHERE x.txn_date >= '2025-07-17'
+        SELECT * FROM tin_db.records
+        WHERE end_date >= ?
+          AND start_date <= ?
+          AND tin IN (?)
         
-2025-12-07 10:28:34,917 [INFO] Connected to Teradata successfully.
-2025-12-07 10:28:35,163 [INFO] Fetched 1 rows for tin=TIN3, Date=2025-07-17
-2025-12-07 10:28:35,759 [INFO] Excel report generated: TIN3_2025-07-17.xlsx
-2025-12-07 10:28:35,760 [INFO] 127.0.0.1 - - [07/Dec/2025 10:28:35] "POST /download HTTP/1.1" 200 -
+2025-12-07 12:16:35,609 [INFO] Params: ['2025-03-21', '2025-12-07', 'TIN2']
+2025-12-07 12:16:37,602 [INFO] Excel report generated: TIN2_2025-03-21.xlsx
+2025-12-07 12:16:37,618 [INFO] 127.0.0.1 - - [07/Dec/2025 12:16:37] "POST /download HTTP/1.1" 200 -
+2025-12-07 12:17:24,248 [INFO] Final SQL query:
+
+        SELECT * FROM tin_db.records
+        WHERE end_date >= ?
+          AND start_date <= ?
+          AND tin IN (?)
+         AND npi = ?
+2025-12-07 12:17:24,250 [INFO] Params: ['2025-03-21', '2025-12-07', 'TIN2', '9922336677']
+2025-12-07 12:17:25,437 [INFO] Excel report generated: TIN2_2025-03-21.xlsx
+2025-12-07 12:17:25,437 [INFO] 127.0.0.1 - - [07/Dec/2025 12:17:25] "POST /download HTTP/1.1" 200 -
+2025-12-07 12:17:31,669 [INFO] Final SQL query:
+
+        SELECT * FROM tin_db.records
+        WHERE end_date >= ?
+          AND start_date <= ?
+          AND tin IN (?)
+         AND npi = ?
+2025-12-07 12:17:31,670 [INFO] Params: ['2025-03-21', '2025-12-07', 'TIN2', '9922336671']
+2025-12-07 12:17:32,827 [WARNING] No records found for TINs=TIN2, End Date=2025-03-21, Start Date=2025-12-07
+2025-12-07 12:17:32,829 [INFO] 127.0.0.1 - - [07/Dec/2025 12:17:32] "[33mPOST /download HTTP/1.1[0m" 404 -
+2025-12-07 12:17:50,412 [INFO] Final SQL query:
+
+        SELECT * FROM tin_db.records
+        WHERE end_date >= ?
+          AND start_date <= ?
+          AND tin IN (?,?)
+         AND npi = ?
+2025-12-07 12:17:50,413 [INFO] Params: ['2025-03-21', '2025-12-07', 'TIN2', 'TIN3', '9922336671']
+2025-12-07 12:17:51,576 [WARNING] No records found for TINs=TIN2,TIN3, End Date=2025-03-21, Start Date=2025-12-07
+2025-12-07 12:17:51,578 [INFO] 127.0.0.1 - - [07/Dec/2025 12:17:51] "[33mPOST /download HTTP/1.1[0m" 404 -
+2025-12-07 12:18:16,109 [INFO] Final SQL query:
+
+        SELECT * FROM tin_db.records
+        WHERE end_date >= ?
+          AND start_date <= ?
+          AND tin IN (?,?)
+         AND npi = ?
+2025-12-07 12:18:16,110 [INFO] Params: ['2025-03-21', '2025-12-07', 'TIN2', 'TIN3', '9922336677']
+2025-12-07 12:18:17,296 [INFO] Excel report generated: TIN2_TIN3_2025-03-21.xlsx
+2025-12-07 12:18:17,297 [INFO] 127.0.0.1 - - [07/Dec/2025 12:18:17] "POST /download HTTP/1.1" 200 -
