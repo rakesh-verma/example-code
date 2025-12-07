@@ -1,0 +1,63 @@
+2025-11-27 12:39:59,607 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-11-27 12:39:59,608 [INFO] [33mPress CTRL+C to quit[0m
+2025-11-27 12:39:59,610 [INFO]  * Restarting with stat
+2025-11-27 12:40:00,987 [WARNING]  * Debugger is active!
+2025-11-27 12:40:00,999 [INFO]  * Debugger PIN: 535-846-782
+2025-11-27 12:40:46,202 [INFO] 127.0.0.1 - - [27/Nov/2025 12:40:46] "GET / HTTP/1.1" 200 -
+2025-11-27 12:40:46,402 [INFO] 127.0.0.1 - - [27/Nov/2025 12:40:46] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-12-07 10:26:46,008 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2025-12-07 10:26:46,010 [INFO] [33mPress CTRL+C to quit[0m
+2025-12-07 10:26:46,013 [INFO]  * Restarting with stat
+2025-12-07 10:26:47,186 [WARNING]  * Debugger is active!
+2025-12-07 10:26:47,200 [INFO]  * Debugger PIN: 535-846-782
+2025-12-07 10:26:49,871 [INFO] 127.0.0.1 - - [07/Dec/2025 10:26:49] "GET / HTTP/1.1" 200 -
+2025-12-07 10:26:50,078 [INFO] 127.0.0.1 - - [07/Dec/2025 10:26:50] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-12-07 10:28:32,717 [INFO] Query with placeholders:
+
+        WITH abc AS
+        (
+            SELECT * FROM tin_db.records
+            WHERE txn_date >= ?
+        ),
+        a AS
+        (
+            SELECT * FROM tin_db.records
+            WHERE txn_date >= ?
+        )
+        SELECT x.* 
+        FROM
+        (
+            SELECT * FROM abc WHERE tin IN (?)
+            UNION
+            SELECT * FROM abc WHERE tin IN (?)
+        ) x
+        WHERE x.txn_date >= ?
+        
+2025-12-07 10:28:32,721 [INFO] Params: ['2025-07-17', '2025-07-17', 'TIN3', 'TIN3', '2025-07-17']
+2025-12-07 10:28:32,722 [INFO] Final SQL query for SQL editor:
+
+        WITH abc AS
+        (
+            SELECT * FROM tin_db.records
+            WHERE txn_date >= '2025-07-17'
+        ),
+        a AS
+        (
+            SELECT * FROM tin_db.records
+            WHERE txn_date >= '2025-07-17'
+        )
+        SELECT x.* 
+        FROM
+        (
+            SELECT * FROM abc WHERE tin IN ('TIN3')
+            UNION
+            SELECT * FROM abc WHERE tin IN ('TIN3')
+        ) x
+        WHERE x.txn_date >= '2025-07-17'
+        
+2025-12-07 10:28:34,917 [INFO] Connected to Teradata successfully.
+2025-12-07 10:28:35,163 [INFO] Fetched 1 rows for tin=TIN3, Date=2025-07-17
+2025-12-07 10:28:35,759 [INFO] Excel report generated: TIN3_2025-07-17.xlsx
+2025-12-07 10:28:35,760 [INFO] 127.0.0.1 - - [07/Dec/2025 10:28:35] "POST /download HTTP/1.1" 200 -

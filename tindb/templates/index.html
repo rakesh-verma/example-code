@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Download TIN Excel Report</title>
+  <style>
+    body {
+      font-family: Arial;
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f4f4f4;
+      border-radius: 10px;
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+    }
+    button {
+      background: green;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    .spinner {
+      display: none;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Download TIN Excel Report</h2>
+  <form id="reportForm">
+    <label>TIN:</label>
+    <input type="text" name="fe_tin" required>
+
+    <label>Date (yyyy-mm-dd):</label>
+    <input type="text" name="date" placeholder="yyyy-mm-dd" pattern="\d{4}-\d{2}-\d{2}" required>
+
+    <button type="submit" id="submitBtn">Download Excel</button>
+    <div class="spinner" id="spinner">🔄 Processing...</div>
+  </form>
+
+  <script>
+    const form = document.getElementById('reportForm');
+    const spinner = document.getElementById('spinner');
+    const submitBtn = document.getElementById('submitBtn');
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+      spinner.style.display = 'block';
+      submitBtn.disabled = true;
+
+      fetch('/download', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => {
+        if (!response.ok) throw new Error("No data found or error.");
+        return response.blob();
+      })
+      .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const tin = form.querySelector('input[name="fe_tin"]').value;
+        const date = form.querySelector('input[name="date"]').value;
+        a.href = url;
+        a.download = `${tin}_${date}.xlsx`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      })
+      .catch(err => alert(err.message))
+      .finally(() => {
+        spinner.style.display = 'none';
+        submitBtn.disabled = false;
+      });
+    });
+  </script>
+</body>
+</html>
+
+
