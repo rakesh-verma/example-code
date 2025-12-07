@@ -36,13 +36,16 @@
     <input type="text" name="fe_tin" placeholder="tin1,tin2,tin3" required>
 
     <label>End Date (yyyy-mm-dd):</label>
-    <input type="text" name="end_date" placeholder="yyyy-mm-dd" pattern="\d{4}-\d{2}-\d{2}" required>
+    <input type="text" name="end_date" placeholder="yyyy-mm-dd"
+           pattern="\d{4}-\d{2}-\d{2}" required>
 
     <label>Start Date (optional, defaults to today if empty, yyyy-mm-dd):</label>
     <input type="text" name="start_date" placeholder="yyyy-mm-dd">
 
-    <label>NPI (optional):</label>
-    <input type="text" name="npi" placeholder="Enter NPI">
+    <label>NPI (optional, must be exactly 10 digits):</label>
+    <input type="text" name="npi" placeholder="Enter NPI"
+           minlength="10" maxlength="10" pattern="\d{10}"
+           title="NPI must be exactly 10 digits">
 
     <button type="submit" id="submitBtn">Download Excel</button>
     <div class="spinner" id="spinner">🔄 Processing...</div>
@@ -54,9 +57,16 @@
     const submitBtn = document.getElementById('submitBtn');
 
     form.addEventListener('submit', function (e) {
-      e.preventDefault();
+      // If NPI is provided but invalid, stop submission
+      const npiValue = form.querySelector('input[name="npi"]').value.trim();
+      if (npiValue !== "" && !/^\d{10}$/.test(npiValue)) {
+        alert("NPI must be exactly 10 digits");
+        return;
+      }
 
+      e.preventDefault();
       const formData = new FormData(form);
+
       spinner.style.display = 'block';
       submitBtn.disabled = true;
 
