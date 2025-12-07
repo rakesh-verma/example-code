@@ -39,29 +39,32 @@ def download():
         end_date_obj = datetime.strptime(end_date_str, '%Y-%m-%d')
         formatted_end_date = end_date_obj.strftime('%Y-%m-%d')
 
+        # Use today's date if start_date is not provided
+        if start_date_str:
+            start_date_obj = datetime.strptime(start_date_str, '%Y-%m-%d')
+        else:
+            start_date_obj = datetime.today()
+        formatted_start_date = start_date_obj.strftime('%Y-%m-%d')
+
         # Split TINs by comma and strip spaces
         tin_list = [tin.strip() for tin in fe_tin.split(",") if tin.strip()]
         if not tin_list:
             return "Please provide at least one TIN.", 400
 
-        # Create placeholders for TINs for SQL IN clause
+        # Create placeholders for TINs
         tin_placeholders = ','.join(['?'] * len(tin_list))
 
         # Base SQL query
         query = f"""
         SELECT * FROM {TERADATA_DB}.records
         WHERE end_date >= ?
+          AND start_date <= ?
           AND tin IN ({tin_placeholders})
         """
 
-        params = [formatted_end_date] + tin_list
+        params = [formatted_end_date, formatted_start_date] + tin_list
 
-        # Optional filters
-        if start_date_str:
-            start_date_obj = datetime.strptime(start_date_str, '%Y-%m-%d')
-            query += " AND start_date >= ?"
-            params.append(start_date_obj.strftime('%Y-%m-%d'))
-
+        # Optional NPI filter
         if npi_value:
             query += " AND npi = ?"
             params.append(npi_value)
@@ -82,7 +85,7 @@ def download():
             df = pd.DataFrame(rows, columns=cols)
 
         if df.empty:
-            logging.warning(f"No records found for TINs={fe_tin}, End Date={formatted_end_date}")
+            logging.warning(f"No records found for TINs={fe_tin}, End Date={formatted_end_date}, Start Date={formatted_start_date}")
             return "No records found.", 404
 
         # Prepare Excel
