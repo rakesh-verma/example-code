@@ -32,8 +32,8 @@
 <body>
   <h2>Download TIN Excel Report</h2>
   <form id="reportForm">
-    <label>TIN:</label>
-    <input type="text" name="fe_tin" required>
+    <label>TIN (comma-separated for multiple):</label>
+    <input type="text" name="fe_tin" placeholder="tin1,tin2,tin3" required>
 
     <label>End Date (yyyy-mm-dd):</label>
     <input type="text" name="end_date" placeholder="yyyy-mm-dd" pattern="\d{4}-\d{2}-\d{2}" required>
@@ -71,7 +71,7 @@
       .then(blob => {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
-        const tin = form.querySelector('input[name="fe_tin"]').value;
+        const tin = form.querySelector('input[name="fe_tin"]').value.replace(/,/g, "_");
         const endDate = form.querySelector('input[name="end_date"]').value;
         a.href = url;
         a.download = `${tin}_${endDate}.xlsx`;

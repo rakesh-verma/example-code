@@ -7,7 +7,6 @@ import logging
 
 app = Flask(__name__)
 
-# Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
@@ -17,7 +16,6 @@ logging.basicConfig(
     ]
 )
 
-# Teradata config
 TERADATA_HOST = '192.168.137.128'
 TERADATA_USER = 'dbc'
 TERADATA_PASSWORD = 'dbc'
@@ -31,7 +29,7 @@ def index():
 
 @app.route('/download', methods=['POST'])
 def download():
-    be_tin = request.form['fe_tin']
+    fe_tin = request.form['fe_tin']
     end_date_str = request.form['end_date']
     start_date_str = request.form.get('start_date')  # optional
     npi_value = request.form.get('npi')               # optional
@@ -41,19 +39,27 @@ def download():
         end_date_obj = datetime.strptime(end_date_str, '%Y-%m-%d')
         formatted_end_date = end_date_obj.strftime('%Y-%m-%d')
 
+        # Split TINs by comma and strip spaces
+        tin_list = [tin.strip() for tin in fe_tin.split(",") if tin.strip()]
+        if not tin_list:
+            return "Please provide at least one TIN.", 400
+
+        # Create placeholders for TINs for SQL IN clause
+        tin_placeholders = ','.join(['?'] * len(tin_list))
+
         # Base SQL query
         query = f"""
         SELECT * FROM {TERADATA_DB}.records
         WHERE end_date >= ?
-          AND tin = ?
+          AND tin IN ({tin_placeholders})
         """
 
-        params = [formatted_end_date, be_tin]
+        params = [formatted_end_date] + tin_list
 
-        # Add optional filters
+        # Optional filters
         if start_date_str:
-            query += " AND start_date >= ?"
             start_date_obj = datetime.strptime(start_date_str, '%Y-%m-%d')
+            query += " AND start_date >= ?"
             params.append(start_date_obj.strftime('%Y-%m-%d'))
 
         if npi_value:
@@ -76,7 +82,7 @@ def download():
             df = pd.DataFrame(rows, columns=cols)
 
         if df.empty:
-            logging.warning(f"No records found for tin={be_tin}, End Date={formatted_end_date}")
+            logging.warning(f"No records found for TINs={fe_tin}, End Date={formatted_end_date}")
             return "No records found.", 404
 
         # Prepare Excel
@@ -85,7 +91,7 @@ def download():
             df.to_excel(writer, index=False, sheet_name='Report')
         output.seek(0)
 
-        filename = f"{be_tin}_{formatted_end_date}.xlsx"
+        filename = f"{'_'.join(tin_list)}_{formatted_end_date}.xlsx"
         logging.info(f"Excel report generated: {filename}")
 
         return send_file(
