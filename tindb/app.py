@@ -31,50 +31,44 @@ def index():
 
 @app.route('/download', methods=['POST'])
 def download():
-    # Get user input
-    be_tin = request.form['fe_tin']           # HTML field 'fe_tin'
-    end_date_str = request.form['end_date']   # HTML field 'end_date'
+    be_tin = request.form['fe_tin']
+    end_date_str = request.form['end_date']
+    start_date_str = request.form.get('start_date')  # optional
+    npi_value = request.form.get('npi')               # optional
 
     try:
-        # Validate and format end date
-        date_obj = datetime.strptime(end_date_str, '%Y-%m-%d')
-        formatted_date = date_obj.strftime('%Y-%m-%d')
+        # Validate end date
+        end_date_obj = datetime.strptime(end_date_str, '%Y-%m-%d')
+        formatted_end_date = end_date_obj.strftime('%Y-%m-%d')
 
-        # SQL query updated to use end_date instead of txn_date
+        # Base SQL query
         query = f"""
-        WITH abc AS
-        (
-            SELECT * FROM {TERADATA_DB}.records
-            WHERE end_date >= ?
-        ),
-        a AS
-        (
-            SELECT * FROM {TERADATA_DB}.records
-            WHERE end_date >= ?
-        )
-        SELECT x.* 
-        FROM
-        (
-            SELECT * FROM abc WHERE tin IN (?)
-            UNION
-            SELECT * FROM abc WHERE tin IN (?)
-        ) x
-        WHERE x.end_date >= ?
+        SELECT * FROM {TERADATA_DB}.records
+        WHERE end_date >= ?
+          AND tin = ?
         """
 
-        # Parameters for SQL
-        params = [formatted_date, formatted_date, be_tin, be_tin, formatted_date]
+        params = [formatted_end_date, be_tin]
 
-        logging.info("Query with placeholders:\n%s", query)
+        # Add optional filters
+        if start_date_str:
+            query += " AND start_date >= ?"
+            start_date_obj = datetime.strptime(start_date_str, '%Y-%m-%d')
+            params.append(start_date_obj.strftime('%Y-%m-%d'))
+
+        if npi_value:
+            query += " AND npi = ?"
+            params.append(npi_value)
+
+        logging.info("Final SQL query:\n%s", query)
         logging.info("Params: %s", params)
 
-        # Connect to Teradata and execute query
+        # Execute query
         with teradatasql.connect(
             host=TERADATA_HOST,
             user=TERADATA_USER,
             password=TERADATA_PASSWORD
         ) as con:
-            logging.info("Connected to Teradata successfully.")
             cur = con.cursor()
             cur.execute(query, params)
             rows = cur.fetchall()
@@ -82,18 +76,16 @@ def download():
             df = pd.DataFrame(rows, columns=cols)
 
         if df.empty:
-            logging.warning(f"No records found for tin={be_tin}, End Date={formatted_date}")
+            logging.warning(f"No records found for tin={be_tin}, End Date={formatted_end_date}")
             return "No records found.", 404
 
-        logging.info(f"Fetched {len(df)} rows for tin={be_tin}, End Date={formatted_date}")
-
-        # Prepare Excel file
+        # Prepare Excel
         output = BytesIO()
         with pd.ExcelWriter(output, engine='openpyxl') as writer:
             df.to_excel(writer, index=False, sheet_name='Report')
         output.seek(0)
 
-        filename = f"{be_tin}_{formatted_date}.xlsx"
+        filename = f"{be_tin}_{formatted_end_date}.xlsx"
         logging.info(f"Excel report generated: {filename}")
 
         return send_file(

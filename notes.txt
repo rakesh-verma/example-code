@@ -1,0 +1,24 @@
+ALTER TABLE tin_db.records ADD end_date DATE;
+
+LTER TABLE tin_db.records RENAME COLUMN end_date TO start_date;
+ SELECT * FROM tin_db.records;
+ ALTER TABLE tin_db.records ADD npi VARCHAR(20);
+ 
+UPDATE tin_db.records
+SET 
+    npi = '6122336677',
+    end_date = '2025-06-26' -- Added the missing quote
+WHERE 
+    tin = 'TIN5';
+    
+    
+ALTER TABLE tin_db.records
+ADD start_date DATE;
+
+UPDATE tin_db.records
+SET start_date = txn_date;
+
+
+ALTER TABLE tin_db.records DROP COLUMN txn_date;
+
+SHOW TABLE tin_db.records;
