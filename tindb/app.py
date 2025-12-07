@@ -40,17 +40,17 @@ def download():
         date_obj = datetime.strptime(end_date_str, '%Y-%m-%d')
         formatted_date = date_obj.strftime('%Y-%m-%d')
 
-        # SQL query with placeholders
+        # SQL query updated to use end_date instead of txn_date
         query = f"""
         WITH abc AS
         (
             SELECT * FROM {TERADATA_DB}.records
-            WHERE txn_date >= ?
+            WHERE end_date >= ?
         ),
         a AS
         (
             SELECT * FROM {TERADATA_DB}.records
-            WHERE txn_date >= ?
+            WHERE end_date >= ?
         )
         SELECT x.* 
         FROM
@@ -59,7 +59,7 @@ def download():
             UNION
             SELECT * FROM abc WHERE tin IN (?)
         ) x
-        WHERE x.txn_date >= ?
+        WHERE x.end_date >= ?
         """
 
         # Parameters for SQL
