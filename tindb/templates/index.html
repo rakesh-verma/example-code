@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -36,8 +35,8 @@
     <label>TIN:</label>
     <input type="text" name="fe_tin" required>
 
-    <label>Date (yyyy-mm-dd):</label>
-    <input type="text" name="date" placeholder="yyyy-mm-dd" pattern="\d{4}-\d{2}-\d{2}" required>
+    <label>End Date (yyyy-mm-dd):</label>
+    <input type="text" name="end_date" placeholder="yyyy-mm-dd" pattern="\d{4}-\d{2}-\d{2}" required>
 
     <button type="submit" id="submitBtn">Download Excel</button>
     <div class="spinner" id="spinner">🔄 Processing...</div>
@@ -67,9 +66,9 @@
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         const tin = form.querySelector('input[name="fe_tin"]').value;
-        const date = form.querySelector('input[name="date"]').value;
+        const endDate = form.querySelector('input[name="end_date"]').value;
         a.href = url;
-        a.download = `${tin}_${date}.xlsx`;
+        a.download = `${tin}_${endDate}.xlsx`;
         document.body.appendChild(a);
         a.click();
         a.remove();
@@ -83,5 +82,3 @@
   </script>
 </body>
 </html>
-
-
