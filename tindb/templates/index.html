@@ -43,10 +43,10 @@
     <label>Start Date (optional, defaults to today if empty, yyyy-mm-dd):</label>
     <input type="text" name="start_date" placeholder="yyyy-mm-dd">
 
-    <label>NPI (optional, must be exactly 10 digits):</label>
+    <label>NPI (optional, must be exactly 10 alphanumeric characters):</label>
     <input type="text" name="npi" placeholder="Enter NPI"
-           minlength="10" maxlength="10" pattern="\d{10}"
-           title="NPI must be exactly 10 digits">
+           minlength="10" maxlength="10" pattern="[A-Za-z0-9]{10}"
+           title="NPI must be exactly 10 alphanumeric characters">
 
     <button type="submit" id="submitBtn">Download Excel</button>
     <div class="spinner" id="spinner">🔄 Processing...</div>
@@ -74,8 +74,8 @@
 
       // Validate NPI (if provided)
       const npiValue = form.querySelector('input[name="npi"]').value.trim();
-      if (npiValue !== "" && !/^\d{10}$/.test(npiValue)) {
-        alert("NPI must be exactly 10 digits.");
+      if (npiValue !== "" && !/^[A-Za-z0-9]{10}$/.test(npiValue)) {
+        alert("NPI must be exactly 10 alphanumeric characters.");
         return;
       }
 

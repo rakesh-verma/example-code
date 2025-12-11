@@ -1,65 +1,151 @@
-2025-12-07 12:15:21,938 [INFO] Final SQL query:
+2025-12-10 13:39:51,541 [INFO] ----- New request started -----
+2025-12-10 13:39:51,546 [INFO] Inputs - fe_tin: TIN000001 | end_date: 2025-02-20 | start_date: (empty) | npi: (empty)
+2025-12-10 13:39:51,593 [INFO] TIN placeholders: ?
+2025-12-10 13:39:51,594 [INFO] NPI filter enabled: False
+2025-12-10 13:39:51,594 [INFO] Executing SQL...
+2025-12-10 13:39:51,595 [INFO] SQL:
 
-        SELECT * FROM tin_db.records
-        WHERE end_date >= ?
-          AND start_date >= ?
-          AND tin IN (?)
+        WITH abc AS
+        (
+            SELECT *
+            FROM tin_db.records
+            WHERE end_date >= ?
+              AND start_date <= ?
+        )
         
-2025-12-07 12:15:21,939 [INFO] Params: ['2025-03-21', '2025-12-07', 'TIN2']
-2025-12-07 12:15:23,094 [WARNING] No records found for TINs=TIN2, End Date=2025-03-21, Start Date=2025-12-07
-2025-12-07 12:15:23,095 [INFO] 127.0.0.1 - - [07/Dec/2025 12:15:23] "[33mPOST /download HTTP/1.1[0m" 404 -
-2025-12-07 12:16:21,324 [INFO]  * Detected change in 'C:\\rakesh-c\\rnd\\python\\tindb\\app.py', reloading
-2025-12-07 12:16:21,514 [INFO]  * Restarting with stat
-2025-12-07 12:16:22,745 [WARNING]  * Debugger is active!
-2025-12-07 12:16:22,756 [INFO]  * Debugger PIN: 535-846-782
-2025-12-07 12:16:28,077 [INFO] 127.0.0.1 - - [07/Dec/2025 12:16:28] "GET / HTTP/1.1" 200 -
-2025-12-07 12:16:35,609 [INFO] Final SQL query:
-
-        SELECT * FROM tin_db.records
-        WHERE end_date >= ?
-          AND start_date <= ?
-          AND tin IN (?)
+        SELECT *
+        FROM
+        (
+            SELECT * FROM abc WHERE tin IN (?)
+        ) x
         
-2025-12-07 12:16:35,609 [INFO] Params: ['2025-03-21', '2025-12-07', 'TIN2']
-2025-12-07 12:16:37,602 [INFO] Excel report generated: TIN2_2025-03-21.xlsx
-2025-12-07 12:16:37,618 [INFO] 127.0.0.1 - - [07/Dec/2025 12:16:37] "POST /download HTTP/1.1" 200 -
-2025-12-07 12:17:24,248 [INFO] Final SQL query:
+        WHERE x.end_date >= ?
+          AND x.start_date <= ?
+        
+        
+2025-12-10 13:39:51,608 [INFO] Params: ['2025-02-20', '2025-12-10', 'TIN000001', '2025-02-20', '2025-12-10']
+2025-12-10 13:39:53,146 [INFO] Connected to Teradata.
+2025-12-10 13:39:53,239 [INFO] Rows returned: 1
+2025-12-10 13:39:53,792 [INFO] Excel ready: tin_report_2025-02-20.xlsx
+2025-12-10 13:39:53,793 [INFO] 127.0.0.1 - - [10/Dec/2025 13:39:53] "POST /download HTTP/1.1" 200 -
+2025-12-10 13:40:13,400 [INFO] ----- New request started -----
+2025-12-10 13:40:13,402 [INFO] Inputs - fe_tin: TIN000001 | end_date: 2025-02-20 | start_date: (empty) | npi: 9876543210
+2025-12-10 13:40:13,437 [INFO] TIN placeholders: ?
+2025-12-10 13:40:13,437 [INFO] NPI filter enabled: True
+2025-12-10 13:40:13,438 [INFO] Executing SQL...
+2025-12-10 13:40:13,438 [INFO] SQL:
 
-        SELECT * FROM tin_db.records
-        WHERE end_date >= ?
-          AND start_date <= ?
-          AND tin IN (?)
-         AND npi = ?
-2025-12-07 12:17:24,250 [INFO] Params: ['2025-03-21', '2025-12-07', 'TIN2', '9922336677']
-2025-12-07 12:17:25,437 [INFO] Excel report generated: TIN2_2025-03-21.xlsx
-2025-12-07 12:17:25,437 [INFO] 127.0.0.1 - - [07/Dec/2025 12:17:25] "POST /download HTTP/1.1" 200 -
-2025-12-07 12:17:31,669 [INFO] Final SQL query:
+        WITH abc AS
+        (
+            SELECT *
+            FROM tin_db.records
+            WHERE end_date >= ?
+              AND start_date <= ?
+        )
+        
+        SELECT *
+        FROM
+        (
+            SELECT * FROM abc WHERE tin IN (?)
+        ) x
+        
+        WHERE x.end_date >= ?
+          AND x.start_date <= ?
+         AND (x.npi IN (?))
+        
+2025-12-10 13:40:13,443 [INFO] Params: ['2025-02-20', '2025-12-10', 'TIN000001', '2025-02-20', '2025-12-10', '9876543210']
+2025-12-10 13:40:14,631 [INFO] Connected to Teradata.
+2025-12-10 13:40:14,830 [INFO] Rows returned: 0
+2025-12-10 13:40:14,830 [WARNING] No matching records found.
+2025-12-10 13:40:14,832 [INFO] 127.0.0.1 - - [10/Dec/2025 13:40:14] "[33mPOST /download HTTP/1.1[0m" 404 -
+2025-12-10 13:40:31,828 [INFO] ----- New request started -----
+2025-12-10 13:40:31,834 [INFO] Inputs - fe_tin: TIN000001 | end_date: 2025-02-20 | start_date: (empty) | npi: 1122336677
+2025-12-10 13:40:31,961 [INFO] TIN placeholders: ?
+2025-12-10 13:40:31,964 [INFO] NPI filter enabled: True
+2025-12-10 13:40:31,966 [INFO] Executing SQL...
+2025-12-10 13:40:31,967 [INFO] SQL:
 
-        SELECT * FROM tin_db.records
-        WHERE end_date >= ?
-          AND start_date <= ?
-          AND tin IN (?)
-         AND npi = ?
-2025-12-07 12:17:31,670 [INFO] Params: ['2025-03-21', '2025-12-07', 'TIN2', '9922336671']
-2025-12-07 12:17:32,827 [WARNING] No records found for TINs=TIN2, End Date=2025-03-21, Start Date=2025-12-07
-2025-12-07 12:17:32,829 [INFO] 127.0.0.1 - - [07/Dec/2025 12:17:32] "[33mPOST /download HTTP/1.1[0m" 404 -
-2025-12-07 12:17:50,412 [INFO] Final SQL query:
+        WITH abc AS
+        (
+            SELECT *
+            FROM tin_db.records
+            WHERE end_date >= ?
+              AND start_date <= ?
+        )
+        
+        SELECT *
+        FROM
+        (
+            SELECT * FROM abc WHERE tin IN (?)
+        ) x
+        
+        WHERE x.end_date >= ?
+          AND x.start_date <= ?
+         AND (x.npi IN (?))
+        
+2025-12-10 13:40:31,983 [INFO] Params: ['2025-02-20', '2025-12-10', 'TIN000001', '2025-02-20', '2025-12-10', '1122336677']
+2025-12-10 13:40:33,178 [INFO] Connected to Teradata.
+2025-12-10 13:40:33,327 [INFO] Rows returned: 1
+2025-12-10 13:40:33,352 [INFO] Excel ready: tin_report_2025-02-20.xlsx
+2025-12-10 13:40:33,354 [INFO] 127.0.0.1 - - [10/Dec/2025 13:40:33] "POST /download HTTP/1.1" 200 -
+2025-12-10 13:41:15,802 [INFO] ----- New request started -----
+2025-12-10 13:41:15,805 [INFO] Inputs - fe_tin: TINasdasd | end_date: 2025-02-20 | start_date: (empty) | npi: 1122336611
+2025-12-10 13:41:15,834 [INFO] TIN placeholders: ?
+2025-12-10 13:41:15,835 [INFO] NPI filter enabled: True
+2025-12-10 13:41:15,835 [INFO] Executing SQL...
+2025-12-10 13:41:15,836 [INFO] SQL:
 
-        SELECT * FROM tin_db.records
-        WHERE end_date >= ?
-          AND start_date <= ?
-          AND tin IN (?,?)
-         AND npi = ?
-2025-12-07 12:17:50,413 [INFO] Params: ['2025-03-21', '2025-12-07', 'TIN2', 'TIN3', '9922336671']
-2025-12-07 12:17:51,576 [WARNING] No records found for TINs=TIN2,TIN3, End Date=2025-03-21, Start Date=2025-12-07
-2025-12-07 12:17:51,578 [INFO] 127.0.0.1 - - [07/Dec/2025 12:17:51] "[33mPOST /download HTTP/1.1[0m" 404 -
-2025-12-07 12:18:16,109 [INFO] Final SQL query:
+        WITH abc AS
+        (
+            SELECT *
+            FROM tin_db.records
+            WHERE end_date >= ?
+              AND start_date <= ?
+        )
+        
+        SELECT *
+        FROM
+        (
+            SELECT * FROM abc WHERE tin IN (?)
+        ) x
+        
+        WHERE x.end_date >= ?
+          AND x.start_date <= ?
+         AND (x.npi IN (?))
+        
+2025-12-10 13:41:15,841 [INFO] Params: ['2025-02-20', '2025-12-10', 'TINasdasd', '2025-02-20', '2025-12-10', '1122336611']
+2025-12-10 13:41:17,041 [INFO] Connected to Teradata.
+2025-12-10 13:41:17,148 [INFO] Rows returned: 0
+2025-12-10 13:41:17,151 [WARNING] No matching records found.
+2025-12-10 13:41:17,160 [INFO] 127.0.0.1 - - [10/Dec/2025 13:41:17] "[33mPOST /download HTTP/1.1[0m" 404 -
+2025-12-10 13:42:36,672 [INFO] 127.0.0.1 - - [10/Dec/2025 13:42:36] "GET / HTTP/1.1" 200 -
+2025-12-10 13:43:01,000 [INFO] ----- New request started -----
+2025-12-10 13:43:01,003 [INFO] Inputs - fe_tin: TIN000001 | end_date: 2025-02-20 | start_date: (empty) | npi: (empty)
+2025-12-10 13:43:01,037 [INFO] TIN placeholders: ?
+2025-12-10 13:43:01,038 [INFO] NPI filter enabled: False
+2025-12-10 13:43:01,038 [INFO] Executing SQL...
+2025-12-10 13:43:01,039 [INFO] SQL:
 
-        SELECT * FROM tin_db.records
-        WHERE end_date >= ?
-          AND start_date <= ?
-          AND tin IN (?,?)
-         AND npi = ?
-2025-12-07 12:18:16,110 [INFO] Params: ['2025-03-21', '2025-12-07', 'TIN2', 'TIN3', '9922336677']
-2025-12-07 12:18:17,296 [INFO] Excel report generated: TIN2_TIN3_2025-03-21.xlsx
-2025-12-07 12:18:17,297 [INFO] 127.0.0.1 - - [07/Dec/2025 12:18:17] "POST /download HTTP/1.1" 200 -
+        WITH abc AS
+        (
+            SELECT *
+            FROM tin_db.records
+            WHERE end_date >= ?
+              AND start_date <= ?
+        )
+        
+        SELECT *
+        FROM
+        (
+            SELECT * FROM abc WHERE tin IN (?)
+        ) x
+        
+        WHERE x.end_date >= ?
+          AND x.start_date <= ?
+        
+        
+2025-12-10 13:43:01,044 [INFO] Params: ['2025-02-20', '2025-12-10', 'TIN000001', '2025-02-20', '2025-12-10']
+2025-12-10 13:43:02,231 [INFO] Connected to Teradata.
+2025-12-10 13:43:02,332 [INFO] Rows returned: 1
+2025-12-10 13:43:02,352 [INFO] Excel ready: tin_report_2025-02-20.xlsx
+2025-12-10 13:43:02,353 [INFO] 127.0.0.1 - - [10/Dec/2025 13:43:02] "POST /download HTTP/1.1" 200 -
