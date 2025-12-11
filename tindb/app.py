@@ -7,14 +7,18 @@ import logging
 
 app = Flask(__name__)
 
+# ---------------------------
 # Logging configuration
+# ---------------------------
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
     handlers=[logging.FileHandler("app.log"), logging.StreamHandler()]
 )
 
-# Teradata config
+# ---------------------------
+# Teradata configuration
+# ---------------------------
 TERADATA_HOST = "192.168.137.128"
 TERADATA_USER = "dbc"
 TERADATA_PASSWORD = "dbc"
@@ -31,44 +35,42 @@ def download():
     logging.info("----- New request started -----")
 
     try:
-        # ---------------------------------------
-        # INPUT READ
-        # ---------------------------------------
+        # ---------------------------
+        # Read form inputs
+        # ---------------------------
         fe_tin_raw = request.form.get("fe_tin", "").strip()
         end_date_str = request.form.get("end_date", "").strip()
         start_date_str = request.form.get("start_date", "").strip()
-        npi = request.form.get("npi", "").strip()
+        npi_raw = request.form.get("npi", "").strip()
 
         logging.info(
             f"Inputs - fe_tin: {fe_tin_raw} | end_date: {end_date_str} | "
-            f"start_date: {start_date_str or '(empty)'} | npi: {npi or '(empty)'}"
+            f"start_date: {start_date_str or '(empty)'} | npi: {npi_raw or '(empty)'}"
         )
 
-        # ---------------------------------------
-        # TIN VALIDATION
-        # ---------------------------------------
+        # ---------------------------
+        # TIN validation (alphanumeric, exactly 9 chars)
+        # ---------------------------
         tins = [t.strip() for t in fe_tin_raw.split(",") if t.strip()]
-
         if not tins:
             return "TIN is required.", 400
-
         for t in tins:
             if len(t) != 9:
                 logging.warning("Invalid TIN length: %s", t)
-                return f"TIN '{t}' must be 9 characters (letters/numbers allowed).", 400
+                return f"TIN '{t}' must be exactly 9 characters (letters/numbers allowed).", 400
 
-        # ---------------------------------------
-        # END DATE VALIDATION
-        # ---------------------------------------
+        # ---------------------------
+        # End Date validation
+        # ---------------------------
         try:
             end_date_obj = datetime.strptime(end_date_str, "%Y-%m-%d")
         except:
             logging.warning("Invalid End Date format")
             return "End Date must be in yyyy-mm-dd format.", 400
 
-        # ---------------------------------------
-        # START DATE OPTIONAL
-        # ---------------------------------------
+        # ---------------------------
+        # Start Date validation (optional)
+        # ---------------------------
         if start_date_str:
             try:
                 start_date_obj = datetime.strptime(start_date_str, "%Y-%m-%d")
@@ -82,32 +84,33 @@ def download():
         start_date = start_date_obj.strftime("%Y-%m-%d")
         end_date = end_date_obj.strftime("%Y-%m-%d")
 
-        # ---------------------------------------
-        # NPI VALIDATION (alphanumeric, 10 chars)
-        # ---------------------------------------
+        # ---------------------------
+        # NPI validation (optional, multiple, alphanumeric, exactly 10 chars)
+        # ---------------------------
+        npi_list = []
         use_npi_filter = False
 
-        if npi:
-            if len(npi) != 10 or not npi.isalnum():
-                logging.warning("Invalid NPI: %s", npi)
-                return "NPI must be exactly 10 alphanumeric characters.", 400
+        if npi_raw:
+            npi_list = [n.strip() for n in npi_raw.split(",") if n.strip()]
+            for n in npi_list:
+                if len(n) != 10 or not n.isalnum():
+                    logging.warning("Invalid NPI: %s", n)
+                    return f"NPI '{n}' must be exactly 10 alphanumeric characters.", 400
             use_npi_filter = True
-            npi_list = [npi]
 
-        # ---------------------------------------
-        # BUILD PLACEHOLDERS
-        # ---------------------------------------
+        # ---------------------------
+        # Build placeholders
+        # ---------------------------
         tin_placeholders = ",".join(["?"] * len(tins))
-
         if use_npi_filter:
             npi_placeholders = ",".join(["?"] * len(npi_list))
 
         logging.info(f"TIN placeholders: {tin_placeholders}")
         logging.info(f"NPI filter enabled: {use_npi_filter}")
 
-        # ---------------------------------------
-        # BUILD SQL DYNAMICALLY
-        # ---------------------------------------
+        # ---------------------------
+        # Build SQL dynamically
+        # ---------------------------
         base_cte = f"""
         WITH abc AS
         (
@@ -122,7 +125,6 @@ def download():
         WHERE x.end_date >= ?
           AND x.start_date <= ?
         """
-
         if use_npi_filter:
             final_where += f" AND (x.npi IN ({npi_placeholders}))"
 
@@ -135,15 +137,14 @@ def download():
         {final_where}
         """
 
-        # ---------------------------------------
-        # PARAM ORDER BUILD
-        # ---------------------------------------
+        # ---------------------------
+        # Build query parameters
+        # ---------------------------
         params = [
-            end_date, start_date,   # CTE filters
-            *tins,                  # TIN list
-            end_date, start_date    # Final end_date/start_date filters
+            end_date, start_date,  # CTE filters
+            *tins,                 # TIN list
+            end_date, start_date   # Final end_date/start_date filters
         ]
-
         if use_npi_filter:
             params += npi_list
 
@@ -151,9 +152,9 @@ def download():
         logging.info("SQL:\n%s", query)
         logging.info("Params: %s", params)
 
-        # ---------------------------------------
-        # DATABASE EXECUTION
-        # ---------------------------------------
+        # ---------------------------
+        # Execute query
+        # ---------------------------
         with teradatasql.connect(
             host=TERADATA_HOST,
             user=TERADATA_USER,
@@ -168,14 +169,13 @@ def download():
             df = pd.DataFrame(rows, columns=cols)
 
         logging.info(f"Rows returned: {len(df)}")
-
         if df.empty:
             logging.warning("No matching records found.")
             return "No records found.", 404
 
-        # ---------------------------------------
-        # EXCEL EXPORT
-        # ---------------------------------------
+        # ---------------------------
+        # Export to Excel
+        # ---------------------------
         output = BytesIO()
         with pd.ExcelWriter(output, engine="openpyxl") as writer:
             df.to_excel(writer, index=False, sheet_name="Report")

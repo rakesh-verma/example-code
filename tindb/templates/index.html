@@ -43,10 +43,9 @@
     <label>Start Date (optional, defaults to today if empty, yyyy-mm-dd):</label>
     <input type="text" name="start_date" placeholder="yyyy-mm-dd">
 
-    <label>NPI (optional, must be exactly 10 alphanumeric characters):</label>
-    <input type="text" name="npi" placeholder="Enter NPI"
-           minlength="10" maxlength="10" pattern="[A-Za-z0-9]{10}"
-           title="NPI must be exactly 10 alphanumeric characters">
+    <label>NPI (optional, comma-separated, each must be 10 alphanumeric chars):</label>
+    <input type="text" name="npi" placeholder="NPI1,NPI2,NPI3"
+           title="Each NPI must be exactly 10 alphanumeric characters">
 
     <button type="submit" id="submitBtn">Download Excel</button>
     <div class="spinner" id="spinner">🔄 Processing...</div>
@@ -61,7 +60,9 @@
     form.addEventListener('submit', function (e) {
       e.preventDefault();
 
-      // Validate TINs (each should be exactly 9 chars)
+      // ------------------------------------------
+      // TIN VALIDATION
+      // ------------------------------------------
       const tinField = form.querySelector('input[name="fe_tin"]').value.trim();
       const tinList = tinField.split(',').map(t => t.trim());
 
@@ -72,11 +73,21 @@
         }
       }
 
-      // Validate NPI (if provided)
+      // ------------------------------------------
+      // MULTIPLE NPI VALIDATION
+      // ------------------------------------------
       const npiValue = form.querySelector('input[name="npi"]').value.trim();
-      if (npiValue !== "" && !/^[A-Za-z0-9]{10}$/.test(npiValue)) {
-        alert("NPI must be exactly 10 alphanumeric characters.");
-        return;
+
+      if (npiValue !== "") {
+        const npiList = npiValue.split(',').map(n => n.trim());
+        const npiRegex = /^[A-Za-z0-9]{10}$/;
+
+        for (let n of npiList) {
+          if (!npiRegex.test(n)) {
+            alert("Invalid NPI: " + n + "\nEach NPI must be exactly 10 alphanumeric characters.");
+            return;
+          }
+        }
       }
 
       const formData = new FormData(form);

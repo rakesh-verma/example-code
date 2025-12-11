@@ -149,3 +149,100 @@
 2025-12-10 13:43:02,332 [INFO] Rows returned: 1
 2025-12-10 13:43:02,352 [INFO] Excel ready: tin_report_2025-02-20.xlsx
 2025-12-10 13:43:02,353 [INFO] 127.0.0.1 - - [10/Dec/2025 13:43:02] "POST /download HTTP/1.1" 200 -
+2025-12-11 06:03:30,375 [INFO]  * Detected change in 'C:\\rakesh-c\\rnd\\python\\tindb\\app.py', reloading
+2025-12-11 06:03:32,117 [INFO]  * Restarting with stat
+2025-12-11 06:03:39,411 [WARNING]  * Debugger is active!
+2025-12-11 06:03:39,428 [INFO]  * Debugger PIN: 535-846-782
+2025-12-11 11:47:52,186 [INFO] 127.0.0.1 - - [11/Dec/2025 11:47:52] "GET / HTTP/1.1" 200 -
+2025-12-11 11:49:18,303 [INFO] ----- New request started -----
+2025-12-11 11:49:18,314 [INFO] Inputs - fe_tin: TIN000001 | end_date: 2025-02-20 | start_date: (empty) | npi: (empty)
+2025-12-11 11:49:18,834 [INFO] TIN placeholders: ?
+2025-12-11 11:49:18,835 [INFO] NPI filter enabled: False
+2025-12-11 11:49:18,835 [INFO] Executing SQL...
+2025-12-11 11:49:18,836 [INFO] SQL:
+
+        WITH abc AS
+        (
+            SELECT *
+            FROM tin_db.records
+            WHERE end_date >= ?
+              AND start_date <= ?
+        )
+        
+        SELECT *
+        FROM
+        (
+            SELECT * FROM abc WHERE tin IN (?)
+        ) x
+        
+        WHERE x.end_date >= ?
+          AND x.start_date <= ?
+        
+        
+2025-12-11 11:49:18,839 [INFO] Params: ['2025-02-20', '2025-12-11', 'TIN000001', '2025-02-20', '2025-12-11']
+2025-12-11 11:49:21,659 [INFO] Connected to Teradata.
+2025-12-11 11:49:22,565 [INFO] Rows returned: 1
+2025-12-11 11:49:23,266 [INFO] Excel ready: tin_report_2025-02-20.xlsx
+2025-12-11 11:49:23,267 [INFO] 127.0.0.1 - - [11/Dec/2025 11:49:23] "POST /download HTTP/1.1" 200 -
+2025-12-11 11:49:55,030 [INFO] 127.0.0.1 - - [11/Dec/2025 11:49:55] "GET / HTTP/1.1" 200 -
+2025-12-11 11:51:36,274 [INFO] 127.0.0.1 - - [11/Dec/2025 11:51:36] "GET / HTTP/1.1" 200 -
+2025-12-11 12:09:11,450 [INFO] ----- New request started -----
+2025-12-11 12:09:11,454 [INFO] Inputs - fe_tin: TIN000001 | end_date: 2025-02-20 | start_date: (empty) | npi: (empty)
+2025-12-11 12:09:11,703 [INFO] TIN placeholders: ?
+2025-12-11 12:09:11,704 [INFO] NPI filter enabled: False
+2025-12-11 12:09:11,705 [INFO] Executing SQL...
+2025-12-11 12:09:11,715 [INFO] SQL:
+
+        WITH abc AS
+        (
+            SELECT *
+            FROM tin_db.records
+            WHERE end_date >= ?
+              AND start_date <= ?
+        )
+        
+        SELECT *
+        FROM
+        (
+            SELECT * FROM abc WHERE tin IN (?)
+        ) x
+        
+        WHERE x.end_date >= ?
+          AND x.start_date <= ?
+        
+        
+2025-12-11 12:09:11,731 [INFO] Params: ['2025-02-20', '2025-12-11', 'TIN000001', '2025-02-20', '2025-12-11']
+2025-12-11 12:09:12,937 [INFO] Connected to Teradata.
+2025-12-11 12:09:13,049 [INFO] Rows returned: 1
+2025-12-11 12:09:13,094 [INFO] Excel ready: tin_report_2025-02-20.xlsx
+2025-12-11 12:09:13,095 [INFO] 127.0.0.1 - - [11/Dec/2025 12:09:13] "POST /download HTTP/1.1" 200 -
+2025-12-11 12:09:27,985 [INFO] ----- New request started -----
+2025-12-11 12:09:28,014 [INFO] Inputs - fe_tin: TIN000001 | end_date: 2025-02-20 | start_date: (empty) | npi: 1122336677
+2025-12-11 12:09:28,106 [INFO] TIN placeholders: ?
+2025-12-11 12:09:28,108 [INFO] NPI filter enabled: True
+2025-12-11 12:09:28,109 [INFO] Executing SQL...
+2025-12-11 12:09:28,111 [INFO] SQL:
+
+        WITH abc AS
+        (
+            SELECT *
+            FROM tin_db.records
+            WHERE end_date >= ?
+              AND start_date <= ?
+        )
+        
+        SELECT *
+        FROM
+        (
+            SELECT * FROM abc WHERE tin IN (?)
+        ) x
+        
+        WHERE x.end_date >= ?
+          AND x.start_date <= ?
+         AND (x.npi IN (?))
+        
+2025-12-11 12:09:28,126 [INFO] Params: ['2025-02-20', '2025-12-11', 'TIN000001', '2025-02-20', '2025-12-11', '1122336677']
+2025-12-11 12:09:29,295 [INFO] Connected to Teradata.
+2025-12-11 12:09:29,453 [INFO] Rows returned: 1
+2025-12-11 12:09:29,473 [INFO] Excel ready: tin_report_2025-02-20.xlsx
+2025-12-11 12:09:29,475 [INFO] 127.0.0.1 - - [11/Dec/2025 12:09:29] "POST /download HTTP/1.1" 200 -
